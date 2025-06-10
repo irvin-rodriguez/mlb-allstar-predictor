@@ -4,7 +4,7 @@ A PyTorch-based machine learning project that predicts future MLB All-Star playe
 ---
 
 ## 🔍 Project Overview
-We developed a binary classifier that predicts whether an MLB player will be selected as an All-Star in a given season. The project compares the performance of TRNCG against Stochastic Gradient Descent (SGD), showcasing faster convergence and fewer forward/backward propagations.
+Developed a binary classifier that predicts whether an MLB player will be selected as an All-Star in a given season. The project compares the performance of TRNCG against Stochastic Gradient Descent (SGD), showcasing faster convergence and fewer forward/backward propagations.
 
 ---
 
