@@ -34,18 +34,22 @@ Note: The reported propagation counts reflect training batches only. Including v
 
 <div align="center">
   <figure style="display: inline-block; margin: 10px; text-align: center;">
-    <img src="./outputs/SGD_epoch_loss_vs_propagations.png" width="300"/>
-    <figcaption>SGD</figcaption>
+    <img src="./outputs/SGD_epoch_loss_vs_propagations.png" width="280"/>
+    <figcaption><strong>SGD</strong></figcaption>
   </figure>
   <figure style="display: inline-block; margin: 10px; text-align: center;">
-    <img src="./outputs/TRNCG_epoch_loss_vs_propagations.png" width="300"/>
-    <figcaption>TRNCG</figcaption>
-  </figure>
-  <figure style="display: inline-block; margin: 10px; text-align: center;">
-    <img src="./outputs/ADAM_epoch_loss_vs_propagations.png" width="300"/>
-    <figcaption>Adam</figcaption>
+    <img src="./outputs/TRNCG_epoch_loss_vs_propagations.png" width="280"/>
+    <figcaption><strong>TRNCG</strong></figcaption>
   </figure>
 </div>
+
+<div align="center">
+  <figure style="display: inline-block; margin: 10px; text-align: center;">
+    <img src="./outputs/ADAM_epoch_loss_vs_propagations.png" width="280"/>
+    <figcaption><strong>Adam</strong></figcaption>
+  </figure>
+</div>
+
 
 ## Conclusion
 The focus of this project was to implement the Trust Region Newton Conjugate Gradient (TRNCG) optimization algorithm from scratch and compare its performance against standard optimizers available in PyTorch. TRNCG demonstrated strong computational efficiency, achieving competitive loss values with significantly fewer forward and backward propagations than SGD, and showing greater resistance to overfitting. Adam performed the best in terms of raw convergence speed and computational efficiency, requiring the fewest propagations overall. However, it was less resistant to overfitting compared to TRNCG, especially in extended training. 
