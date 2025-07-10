@@ -1,65 +1,53 @@
 # MLB All-Star Predictor with TRNCG Optimization
-A PyTorch-based machine learning project that predicts future MLB All-Star players using historical performance data. This project demonstrates the use of the **Trust Region Newton Conjugate Gradient (TRNCG)** optimization algorithm to efficiently train a neural network by minimizing the Binary Cross Entropy (BCE) loss.
+This is a PyTorch based machine learning project that focuses on implementing the **Trust Region Newton Conjugate Gradient (TRNCG)** optimization algorithm to train a neural network. Since TRNCG is not available in PyTorch by default this was manually implemented. 
+
+The network is trained to predict MLB All-Star selections using a custom-built dataset of historical player statistics. The project emphasizes hands-on implementation of numerical optimization techniques, comparative evaulation against standard optimizers like SGD and Adam, and practical machine learning workflow such as data scraping, preprocessing, model development, and result analysis.
 
 ---
 
-## 🔍 Project Overview
-Developed a binary classifier that predicts whether an MLB player will be selected as an All-Star in a given season. The project compares the performance of TRNCG against Stochastic Gradient Descent (SGD), showcasing faster convergence and fewer forward/backward propagations.
+## Key Features
+
+- Custom implementation of the TRNCG optimizer using matrix-free Hessian-vector products
+- Custom dataset built by combining API-based scraping and public databases, resulting in 11,465 player-season records from 2008–2023
+- Binary classification using a neural network trained with `BCEWithLogitsLoss`
+- Analyzed optimizer efficiency by tracking forward and backward propagations to reach target loss, and visualized computational cost across optimization methods
+- Comparative evaluation against PyTorch's built-in SGD and Adam optimizers
 
 ---
 
-## 🧠 Key Concepts
-- **TRNCG Optimization**: Uses a trust region strategy with conjugate gradient steps to efficiently solve sub-problems using matrix-free Hessian-vector products.
-- **Matrix-Free Hessian Products**: Avoids explicit computation of the Hessian using nested automatic differentiation.
-- **Binary Classification**: Predicts All-Star status based on hitting stats from March through June (when voting closes).
-- **Imbalanced Dataset Handling**: BCE loss is weighted to account for class imbalance between All-Stars and non-All-Stars.
+## Trust Region Newton Conjugate Gradient
+TRNCG is a second-order optimization algorithm that utilizes information about a function's Hessian in order naviagte toward a minimum, unlike first-order methods such as SGD or Adam which rely solely on gradients. 
+
+Although explicit computation and storage of the Hessian can be computationally expensive, TRNCG only requires the Hessian-vector product $v^TB(x)$, not the full matrix. By leveraging matrix-free automatic differentiation, this project efficiently approximates that product, which allows for this second-order optimization to have reduced computational complexity and memory requirements.
 
 ---
 
-## 📊 Dataset Construction
+## Results Summary
 
-- **Seasons**: 2008–2023 (excluding 2020).
-- **Features**: 12 input features derived from hitting statistics collected via `pybaseball`.
-- **Target**: Binary variable indicating All-Star selection.
-- **Sources**:
-  - `pybaseball` (Baseball Reference, FanGraphs, etc.)
-  - Lahman Baseball Database (All-Star rosters)
+The plots below show training and validation loss as a function of the number of forward and backward propagations for each optimizer over 80 epochs. This provides a measure of computational cost, since each call to the model, especially backward propagations, is computationally expensive.
 
-**Note**: The cleaned dataset is too large to upload directly. You'll need to download:
-- Lahman DB: https://sabr.org/lahman-database/
-- `pybaseball`: https://github.com/jldbc/pybaseball
+- To achieve a loss of 0.4, SGD requires the highest number of forward and backward propagations (more than 13,000 each, totaling over 26,000 propagations), making it the most computationally demanding
+- TRNCG reaches the same loss using approximately 3,500 forward propagations and 1,750 backward propagations in just 10 epochs. It performs significantly better than SGD and shows resistance to overfitting, with training and validation loss remaining stable in later epochs
+- Adam achieves the same loss in only about 700 total propagations over 3 epochs, making it the most efficient in terms of convergence. However, additional training results in overfitting, as seen by divergence between training and validation loss
 
----
+Note: The reported propagation counts reflect training batches only. Including validation steps would approximately double the total number of propagations for each optimizer.
 
-## 🛠️ Steps to Reproduce
+<div align="center">
+  <figure style="display: inline-block; margin: 10px; text-align: center;">
+    <img src="./outputs/SGD_epoch_loss_vs_propagations.png" width="300"/>
+    <figcaption>SGD</figcaption>
+  </figure>
+  <figure style="display: inline-block; margin: 10px; text-align: center;">
+    <img src="./outputs/TRNCG_epoch_loss_vs_propagations.png" width="300"/>
+    <figcaption>TRNCG</figcaption>
+  </figure>
+  <figure style="display: inline-block; margin: 10px; text-align: center;">
+    <img src="./outputs/ADAM_epoch_loss_vs_propagations.png" width="300"/>
+    <figcaption>Adam</figcaption>
+  </figure>
+</div>
 
-1. **Data Collection**  
-   Use `pybaseball` and the Lahman database to gather and merge hitting statistics and All-Star selection data.
+## Conclusion
+The focus of this project was to implement the Trust Region Newton Conjugate Gradient (TRNCG) optimization algorithm from scratch and compare its performance against standard optimizers available in PyTorch. TRNCG demonstrated strong computational efficiency, achieving competitive loss values with significantly fewer forward and backward propagations than SGD, and showing greater resistance to overfitting. Adam performed the best in terms of raw convergence speed and computational efficiency, requiring the fewest propagations overall. However, it was less resistant to overfitting compared to TRNCG, especially in extended training. 
 
-2. **Data Cleaning and Feature Engineering**  
-   - Filter stats to include only March–June.
-   - Create binary labels for All-Star status.
-   - Stratified train/test split.
 
-3. **Model Construction**  
-   - 5-layer feedforward neural network (32 → 16 → 8 → 1 neurons).
-   - ReLU activations, Sigmoid output.
-   - BCEWithLogitsLoss with class weighting.
-
-4. **Optimization via TRNCG**
-   - Custom PyTorch-compatible TRNCG optimizer.
-   - Uses matrix-free Hessian-vector products via automatic differentiation.
-   - Trust region tuning (`δ₀`, `δₘₐₓ`) shown to significantly affect convergence.
-
-5. **Evaluation and Comparison**
-   - Accuracy, confusion matrices, and loss convergence plotted.
-   - Compared against SGD: TRNCG requires **~10× fewer propagations** to reach the same loss.
-
----
-
-## 📈 Results Summary
-
-- **TRNCG** outperformed **SGD** in both convergence speed and classification accuracy.
-- TRNCG required **4,816 forward / 2,408 backward propagations** to reach a given loss vs. **42,140 each** for SGD.
-- Confusion matrices show improved All-Star prediction despite dataset imbalance.
-- TRNCG consistently converged within **1 iteration** of Newton CG per epoch.
