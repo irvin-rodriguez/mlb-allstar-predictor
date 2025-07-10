@@ -9,6 +9,7 @@ The network is trained to predict MLB All-Star selections using a custom-built d
 
 - Custom implementation of the TRNCG optimizer using matrix-free Hessian-vector products
 - Custom dataset built by combining API-based scraping and public databases, resulting in 11,465 player-season records from 2008–2023
+- Exploratory data analysis using heatmaps, random forest feature importance, and PCA to guide feature selection and gain insights
 - Binary classification using a neural network trained with `BCEWithLogitsLoss`
 - Analyzed optimizer efficiency by tracking forward and backward propagations to reach target loss, and visualized computational cost across optimization methods
 - Comparative evaluation against PyTorch's built-in SGD and Adam optimizers
